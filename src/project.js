@@ -1,6 +1,6 @@
 class Project {
     constructor(name) {
-        this.name
+        this.name = name
         this.tasks = []
     }
 
