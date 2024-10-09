@@ -2,6 +2,7 @@ import "./styles.css";
 import { Project } from "./project";
 import { Task } from "./task";
 import {compareAsc} from 'date-fns';
+import { displayProject, populateProjectList } from "./domcontroller";
 
 const projectList = [];
 
@@ -46,10 +47,23 @@ function sortTasksByDueDateAndPriority(taskA, taskB) {
 
 const project1 = createProject("First Project")
 const project2 = createProject("Second Project")
-const task1 = createTask("First task", "Do nothing on this first one", "2024-09-24", "Medium")
+const task1 = createTask("First task", "Do nothing on this first one", "2024-09-23", "Medium")
 const task2 = createTask("Second task", "Run", "2024-09-24", "High")
 project1.addTask(task1);
 project1.addTask(task2)
 
 console.log(getTasks("First Project"))
+console.log(projectList)
 sortedTasks (getTasks("First Project"))
+
+populateProjectList(projectList);
+
+document.querySelector(".project-list ul").addEventListener("click", (event) => {
+    if (event.target.tagName === "A") {
+        const projectName = event.target.textContent;
+        const project = getProjectByName(projectList, projectName);
+        if (project) {
+            displayProject(project);
+        }
+    }
+});
