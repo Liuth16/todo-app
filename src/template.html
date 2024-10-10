@@ -9,6 +9,7 @@
     <div class="main-container">
         <div class="navigation">
             <div class="projects">projects</div>
+            <div class="add-project"><button id="showProjectDialog">Add project</button></div>
             <div class="project-list">
                 <ul>
                     <!-- dinamically filled -->
@@ -17,6 +18,7 @@
         </div>
         <div class="main-view">
             <div class="project-title">Project 1</div>
+            <div class="add-task"><button id="showTaskDialog">Add Task</button></div>
             <div class="project-table">
                 <table>
                     <tr>
@@ -51,5 +53,33 @@
             </div>
         </div>
     </div>
+
+  <!-- Add Project Dialog -->
+  <dialog id="addProjectDialog">
+    <form action="#" id="addProjectForm">
+        <h3>Add Project</h3>
+        <input type="text" id="projectName" placeholder="Project Name">
+        <button type="submit" id="submitProject">Create Project</button>
+        <button id="cancelProject">Cancel</button>
+    </form>
+</dialog>
+
+<!-- Add Task Dialog -->
+<dialog id="addTaskDialog">
+    <form action="#" id="addTaskForm">
+        <h3>Add Task</h3>
+        <input type="text" id="taskTitle" placeholder="Task Title" required>
+        <textarea id="taskDescription" placeholder="Task Description"></textarea>
+        <input type="date" id="dueDate" required>
+        <select id="priority">
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+        </select>
+        <button type="submit" id="submitTask">Add Task</button>
+        <button id="cancelTask">Cancel</button>
+    </form>
+</dialog>
+
 </body>
 </html>

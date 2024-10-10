@@ -1,3 +1,7 @@
+import { createProject, createTask, getProjectByName, showProject, sortedTasks, getTasks } from ".";
+
+
+
 function populateProjectList(projectList) {
     const projectListElement = document.querySelector(".project-list ul");
 
@@ -30,6 +34,7 @@ function displayProject (project) {
         noTaskCell.style.textAlign = "center";
     }
 
+
     project.tasks.forEach((task, index) => {
         const row = projectTableBody.insertRow();
 
@@ -58,5 +63,81 @@ function displayProject (project) {
     });
 }
 
+function initEventListeners(projectList) {
+    const addProjectDialog = document.getElementById("addProjectDialog");
+    const addTaskDialog = document.getElementById("addTaskDialog");
 
-export {displayProject, populateProjectList}
+    const addProjectButton = document.getElementById("showProjectDialog");
+    const addTaskButton = document.getElementById("showTaskDialog");
+    const projectForm = document.querySelector("#addProjectForm");
+    const taskForm = document.querySelector("#addTaskForm");
+
+    // Add Project Button (Show dialog)
+    addProjectButton.addEventListener("click", () => {
+        addProjectDialog.showModal();
+    });
+
+    // Add Task Button (Show dialog)
+    addTaskButton.addEventListener("click", () => {
+        addTaskDialog.showModal();
+    });
+
+    // Cancel Project Dialog
+    document.getElementById("cancelProject").addEventListener("click", () => {
+        addProjectDialog.close();
+    });
+
+    // Cancel Task Dialog
+    document.getElementById("cancelTask").addEventListener("click", () => {
+        addTaskDialog.close();
+    });
+
+    projectForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const projectName = document.getElementById("projectName").value;
+        if (projectName) {
+            createProject (projectName);
+            populateProjectList(projectList);
+            addProjectDialog.close();
+            document.getElementById("projectName").value = "";
+            showProject(projectName);
+        }
+    });
+
+
+    taskForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const taskTitle = document.getElementById("taskTitle").value;
+        const taskDescription = document.getElementById("taskDescription").value;
+        const dueDate = document.getElementById("dueDate").value;
+        const priority = document.getElementById("priority").value;
+
+        const projectTitle = document.querySelector(".project-title").textContent;
+        const project = getProjectByName(projectList, projectTitle);
+
+        if (taskTitle && project) {
+            const newTask = createTask(taskTitle, taskDescription, dueDate, priority);
+            project.addTask(newTask);
+            sortedTasks(project.tasks);
+            displayProject(project);
+            addTaskDialog.close();
+            document.getElementById("taskTitle").value = "";
+            document.getElementById("taskDescription").value = "";
+            document.getElementById("dueDate").value = "";
+            document.getElementById("priority").value = "High";
+        }
+    });
+
+    document.querySelector(".project-list ul").addEventListener("click", (event) => {
+        if (event.target.tagName === "A") {
+            const projectName = event.target.textContent;
+            const project = getProjectByName(projectList, projectName);
+            if (project) {
+                displayProject(project);
+            }
+        }
+    });
+}
+
+
+export {displayProject, populateProjectList, initEventListeners}
