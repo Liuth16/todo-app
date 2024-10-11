@@ -27,6 +27,7 @@
                         <th scope="col">Description</th>
                         <th scope="col">Due date</th>
                         <th scope="col">Priority</th>
+                        <th scope="col">Actions</th>
                     </tr>
                     <tr>
                         <td><input type="checkbox" id="task1" name="task1" value="task1"></td>
@@ -58,7 +59,7 @@
   <dialog id="addProjectDialog">
     <form action="#" id="addProjectForm">
         <h3>Add Project</h3>
-        <input type="text" id="projectName" placeholder="Project Name">
+        <input type="text" id="projectName" placeholder="Project Name" required>
         <button type="submit" id="submitProject">Create Project</button>
         <button id="cancelProject">Cancel</button>
     </form>

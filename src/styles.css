@@ -98,6 +98,7 @@ dialog::backdrop {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  margin: 1rem;
 }
 
 .ts-head {
@@ -113,4 +114,10 @@ table {
 
 .project-title {
   font-size: 2rem;
+}
+
+
+li {
+  display: flex;
+  justify-content: space-around;
 }

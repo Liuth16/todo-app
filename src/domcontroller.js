@@ -1,4 +1,4 @@
-import { createProject, createTask, getProjectByName, showProject, sortedTasks, saveChanges } from ".";
+import { createProject, createTask, getProjectByName, showProject, sortedTasks, saveChanges, removeProject } from ".";
 export {displayProject, populateProjectList, initEventListeners}
 
 
@@ -14,13 +14,28 @@ function populateProjectList(projectList) {
         projectLink.href = "#"
         projectLink.textContent = project.name;
         listItem.appendChild(projectLink);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Remove Project";
+        deleteButton.addEventListener("click", () => {
+            removeProject(project.name);
+            populateProjectList(projectList);
+            saveChanges();
+            displayProject(null);
+        });
+        listItem.appendChild(deleteButton)
         projectListElement.appendChild(listItem);
     });
 }
 
 function displayProject (project) {
     const projectTitleElement = document.querySelector(".project-title");
-    projectTitleElement.textContent = project.name;
+
+    if (project) {
+        projectTitleElement.textContent = project.name;
+    } else {
+        return;
+    }
 
     const projectTableBody = document.querySelector(".project-table table");
     while (projectTableBody.rows.length > 1){
@@ -67,6 +82,16 @@ function displayProject (project) {
 
         const priorityCell = row.insertCell();
         priorityCell.textContent = task.priority;
+
+        const removeCell = row.insertCell();
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Remove Task";
+        removeButton.addEventListener("click", () => {
+            project.removeTask(task.title);
+            saveChanges();
+            displayProject(project);
+        });
+        removeCell.appendChild(removeButton);
     });
 }
 

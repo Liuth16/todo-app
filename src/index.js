@@ -4,7 +4,7 @@ import { Task } from "./task";
 import {compareAsc} from 'date-fns';
 import { displayProject, populateProjectList, initEventListeners } from "./domcontroller";
 
-export {createProject, createTask, getProjectByName, showProject, sortedTasks, getTasks, saveChanges, loadProjectListFromLocalStorage}
+export {createProject, createTask, getProjectByName, showProject, sortedTasks, getTasks, saveChanges, loadProjectListFromLocalStorage, removeProject}
 
 document.addEventListener("DOMContentLoaded", () => {
     const storedProjects = loadProjectListFromLocalStorage();
@@ -143,4 +143,20 @@ function loadProjectListFromLocalStorage() {
 
 function saveChanges() {
     saveProjectListToLocalStorage(projectList);
+}
+
+function removeProject(projectName) {
+    if (projectList.length > 1){
+        const projectIndex = projectList.findIndex(project => project.name === projectName);
+        if (projectIndex !== -1) {
+            projectList.splice(projectIndex, 1);
+            saveChanges();
+
+            if (projectList.length > 0) {
+                showProject(projectList[0].name);
+            }
+        }
+    } else {
+        alert("You must keep at least one project")
+    }
 }
