@@ -1,4 +1,5 @@
-import { createProject, createTask, getProjectByName, showProject, sortedTasks, getTasks } from ".";
+import { createProject, createTask, getProjectByName, showProject, sortedTasks, saveChanges } from ".";
+export {displayProject, populateProjectList, initEventListeners}
 
 
 
@@ -43,6 +44,12 @@ function displayProject (project) {
         checkbox.type = "checkbox";
         checkbox.id = `task${index}`;
         checkbox.name = `task${index}`;
+        checkbox.checked = task.completed;
+        checkbox.addEventListener("change", () => {
+            task.changeStatus();
+            console.log(`Task "${task.title}" completion status: ${task.completed}`);
+            saveChanges();
+        });
         completionCell.appendChild(checkbox);
 
         const titleCell = row.insertCell();
@@ -72,22 +79,18 @@ function initEventListeners(projectList) {
     const projectForm = document.querySelector("#addProjectForm");
     const taskForm = document.querySelector("#addTaskForm");
 
-    // Add Project Button (Show dialog)
     addProjectButton.addEventListener("click", () => {
         addProjectDialog.showModal();
     });
 
-    // Add Task Button (Show dialog)
     addTaskButton.addEventListener("click", () => {
         addTaskDialog.showModal();
     });
 
-    // Cancel Project Dialog
     document.getElementById("cancelProject").addEventListener("click", () => {
         addProjectDialog.close();
     });
 
-    // Cancel Task Dialog
     document.getElementById("cancelTask").addEventListener("click", () => {
         addTaskDialog.close();
     });
@@ -98,6 +101,7 @@ function initEventListeners(projectList) {
         if (projectName) {
             createProject (projectName);
             populateProjectList(projectList);
+            saveChanges();
             addProjectDialog.close();
             document.getElementById("projectName").value = "";
             showProject(projectName);
@@ -120,6 +124,7 @@ function initEventListeners(projectList) {
             project.addTask(newTask);
             sortedTasks(project.tasks);
             displayProject(project);
+            saveChanges();
             addTaskDialog.close();
             document.getElementById("taskTitle").value = "";
             document.getElementById("taskDescription").value = "";
@@ -137,7 +142,5 @@ function initEventListeners(projectList) {
             }
         }
     });
+
 }
-
-
-export {displayProject, populateProjectList, initEventListeners}

@@ -4,6 +4,11 @@ class Task {
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
+        this.completed = false;
+    }
+
+    changeStatus() {
+        this.completed = !this.completed;
     }
 }
 

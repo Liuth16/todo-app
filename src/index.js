@@ -4,11 +4,38 @@ import { Task } from "./task";
 import {compareAsc} from 'date-fns';
 import { displayProject, populateProjectList, initEventListeners } from "./domcontroller";
 
-export {createProject, createTask, getProjectByName, showProject, sortedTasks, getTasks}
+export {createProject, createTask, getProjectByName, showProject, sortedTasks, getTasks, saveChanges, loadProjectListFromLocalStorage}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const storedProjects = loadProjectListFromLocalStorage();
+    if (storedProjects.length > 0) {
+        projectList.push(...storedProjects); 
+        populateProjectList(projectList);
+        showProject(projectList[0].name); 
+    } else {
+        const project1 = createProject("Default");
+        const task1 = createTask("First task", "Do nothing on this first one", "2024-09-23", "Medium");
+        const task2 = createTask("Second task", "Run", "2024-09-23", "High");
+        project1.addTask(task1);
+        project1.addTask(task2);
+
+        populateProjectList(projectList);
+        showProject(project1.name);
+        saveChanges(); 
+    }
+
+    initEventListeners(projectList);
+});
+
 
 const projectList = [];
 
 function createProject(name){
+    const existingProject = projectList.find(project => project.name === name);
+    if (existingProject){
+        alert("This project already exists.")
+        return null;
+    }
     const project = new Project(name);
     projectList.push(project);
     return project
@@ -54,15 +81,66 @@ function showProject (name) {
     }
 }
 
-const project1 = createProject("Default")
-const task1 = createTask("First task", "Do nothing on this first one", "2024-09-23", "Medium")
-const task2 = createTask("Second task", "Run", "2024-09-23", "High")
-project1.addTask(task1);
-project1.addTask(task2)
+function storageAvailable(type) {
+    let storage;
+    try {
+        storage = window[type];
+        const x = "__storage_test__";
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    } catch (e) {
+        return (
+            e instanceof DOMException &&
+            e.name === "QuotaExceededError" &&
+            storage &&
+            storage.length !== 0
+        );
+    }
+}
 
-console.log(projectList)
+function saveProjectListToLocalStorage(projectList) {
+    if (storageAvailable('localStorage')) {
+        console.log("Saving to localStorage", projectList);
+        const projectListData = projectList.map(project => ({
+            name: project.name,
+            tasks: project.tasks.map(task => ({
+                title: task.title,
+                description: task.description,
+                dueDate: task.dueDate,
+                priority: task.priority,
+                completed: task.completed,
+            }))
+        }));
+        localStorage.setItem('projectList', JSON.stringify(projectListData));
+    }
+}
 
+function loadProjectListFromLocalStorage() {
+    if (storageAvailable('localStorage')){
+        const projectListData = localStorage.getItem('projectList');
+        if (projectListData) {
+            console.log("Loaded from localStorage", projectListData);
+            const parsedData = JSON.parse(projectListData);
+            return parsedData.map(projectData => {
+                const project = new Project(projectData.name);
+                projectData.tasks.forEach(taskData => {
+                    const task = new Task (
+                        taskData.title,
+                        taskData.description,
+                        taskData.dueDate,
+                        taskData.priority,
+                    );
+                    task.completed = taskData.completed;
+                    project.addTask(task)
+                });
+                return project;
+            })
+        }
+    }
+    return [];
+}
 
-populateProjectList(projectList);
-initEventListeners(projectList);
-showProject("Default")
+function saveChanges() {
+    saveProjectListToLocalStorage(projectList);
+}
