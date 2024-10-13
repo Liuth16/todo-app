@@ -21,7 +21,6 @@ function populateProjectList(projectList) {
             removeProject(project.name);
             populateProjectList(projectList);
             saveChanges();
-            displayProject(null);
         });
         listItem.appendChild(deleteButton)
         projectListElement.appendChild(listItem);
@@ -45,7 +44,7 @@ function displayProject (project) {
     if (project.tasks.length === 0) {
         const noTaskRow = projectTableBody.insertRow();
         const noTaskCell = noTaskRow.insertCell();
-        noTaskCell.colSpan = 5;
+        noTaskCell.colSpan = 6;
         noTaskCell.textContent = "No tasks for this project"
         noTaskCell.style.textAlign = "center";
     }
